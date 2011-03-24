@@ -48,7 +48,8 @@ no directly map to them.
 */
 const kAllowableFlavors = [
   "text/unicode",
-  "text/html"
+  "text/html",
+  "image/png"
   /* CURRENTLY UNSUPPORTED FLAVORS
   "text/plain",
   "image/png",
@@ -77,6 +78,7 @@ Jetpack API druid.
 */
 const kFlavorMap = [
   { short: "text", long: "text/unicode" },
+  { short: "image", long: "image/png" },
   { short: "html", long: "text/html" }
   // Images are currently unsupported.
   //{ short: "image", long: "image/png" },
@@ -123,6 +125,25 @@ exports.set = function(aData, aDataType) {
                     "(couldn't create a Transferable object).");
 
   switch (flavor) {
+    case "image/png":
+     try {
+      let binData = null;
+      let wm = Cc["@mozilla.org/appshell/window-mediator;1"]
+           .getService(Ci.nsIWindowMediator);
+      let win = wm.getMostRecentWindow("navigator:browser");
+      binData = win.atob(options.data); // string
+      let strIS = Cc["@mozilla.org/io/string-input-stream;1"]
+                .createInstance(Ci.nsIStringInputStream)
+      strIS.setData(binData,binData.length);
+      let binStream = Cc["@mozilla.org/binaryinputstream;1"].
+                createInstance(Ci.nsIBinaryInputStream);
+      binStream.setInputStream(strIS);
+      xferable.addDataFlavor(flavor);
+      xferable.setTransferData(flavor, binStream, binStream.available());
+      //xferable.setTransferData(flavor, strIS, strIS.available());
+      }  catch (i) { console.log(i) }
+      break;
+
     case "text/html":
       var str = Cc["@mozilla.org/supports-string;1"].
                 createInstance(Ci.nsISupportsString);
@@ -200,6 +221,19 @@ exports.get = function(aDataType) {
   // TODO: Add flavors here as we support more in kAllowableFlavors.
   switch (flavor) {
     case "text/unicode":
+    case "image/png":
+      let is  = data.value;
+      is.QueryInterface(Ci.nsIInputStream);
+      let size = is.available();
+      let binStream = Cc["@mozilla.org/binaryinputstream;1"].
+                createInstance(Ci.nsIBinaryInputStream);
+      binStream.setInputStream(is);
+      var bytes = binStream.readBytes(binStream.available());
+      let wm = Cc["@mozilla.org/appshell/window-mediator;1"]
+           .getService(Ci.nsIWindowMediator);
+      let win = wm.getMostRecentWindow("navigator:browser");
+      data = win.btoa(bytes)
+      break;
     case "text/html":
       data = data.value.QueryInterface(Ci.nsISupportsString).data;
       break;
