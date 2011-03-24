@@ -1,4 +1,12 @@
 
+// Test set and get image from clipboard
+exports.testWithImage = function(test) { 
+  var clip = require("clipboard");
+  var dataimage = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAAFjH/EfgAgAAACBjSFJNAAB6JQAAgIMAAPn/AACA5gAAdS4AAOpfAAA6lwAAF29p5MQrAAABaElEQVR4nGL4f/w/SQgggBhI1QAQQDANR/7/P0aUBoAAAms4BtYAZOT/AKHWX/9P/Qehqf/+N/7+P+X3/5P//5+AagAIIJgGIEr99v/0fxA48/+/w5f/Du9BjId/QGTWb7gGgACCaQDyI9793/Dzf+vX/0Gf/jPc+M9w8T/Di/+Gb/9Xf/2f9RHuJIAAgmkAOsD32X/mp/8Z7v9nuPWf4dR/hkP/Gc79Z7j+n+n+/5zPcA0AAQTzNFDD4n//ve/8Zzz2nwGIDoM1gJHNlf9HEZ4GCCCYhtNgp6f9+u/z8D/bSbCGIyBke/V/z1+4B4AIIIBQNQBR/c//Pg/+M4I12F3/X/UbJIWkASCAMDQAUdDX/x63QartvoK4p1DiASCAYBpOImkAIu+H/+1vQdmoGgACCClpnELSANQf9h3EOI2uASCAkDScRHUYBJ0GiyNpAAggJA0nwIadRkUnUXwMRAABRHJqBQgwALsonvvjW7ZfAAAAAElFTkSuQmCC"
+  test.assertEqual(clip.set(dataimage,"image"), true, "clip test = true");
+  test.assertEqual(clip.get("image").length, dataimage.length, "clip test = true");
+};
+
 // Test the typical use case, setting & getting with no flavors specified
 exports.testWithNoFlavor = function(test) {
   var contents = "hello there";
