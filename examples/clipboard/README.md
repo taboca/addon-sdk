@@ -1,0 +1,1 @@
+Clipboard example. Shows an image of the clipboard in the right edge. If you rename the first line of the code, it will show whatever you have in the clipboard. The default is always set first, read the same. So you will always see the little heart. 
